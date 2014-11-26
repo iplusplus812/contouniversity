@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerDiagram dslVersion="1.0.0.0" Id="cf30882f-a5eb-4323-a33c-8f3733646255" absoluteBounds="0, 0, 11, 8.5" name="LayerDiagram1">
+  <layerModelMoniker Id="0eb309bd-0a68-4f90-8fa7-345ef87c1bbb" />
+  <nestedChildShapes>
+    <layerShape Id="e4195c37-065d-4cb1-85a1-1da4354d8562" absoluteBounds="2.25, 1.25, 2, 0.75" customColor="161, 199, 231">
+      <layerMoniker Id="ca214325-5f91-4492-b57d-4ee1427ae8a5" />
+    </layerShape>
+    <rectangleShape Id="01d5ba83-bfaf-40a7-9c5a-509954312bcd" absoluteBounds="4.5, 3.875, 2, 0.75" outlineColor="83, 134, 191" outlineThickness="0.03125" />
+  </nestedChildShapes>
+</layerDiagram>

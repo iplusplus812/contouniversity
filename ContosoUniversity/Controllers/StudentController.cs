@@ -15,7 +15,22 @@ namespace ContosoUniversity.Controllers
 {
     public class StudentController : Controller
     {
-        private SchoolContext db = new SchoolContext();
+        /**
+         * to use repository pattern.
+         */
+        //private SchoolContext db = new SchoolContext();
+
+        private IStudentRepository studentRepository;
+
+        public StudentController():this(new StudentRepository(new SchoolContext()))
+        {
+           
+        }
+
+        public StudentController(IStudentRepository studentRepository)
+        {
+            this.studentRepository = studentRepository;
+        }
 
         // GET: Student
         public ActionResult Index(string sortOrder,string currentFilter,string searchString,int? page)
@@ -32,7 +47,7 @@ namespace ContosoUniversity.Controllers
                 searchString = currentFilter;
             }
             ViewBag.CurrentFilter = searchString;
-            var students = from s in db.Students
+            var students = from s in studentRepository.GetStudents() 
                            select s;
             if(!string.IsNullOrEmpty(searchString))
             {
@@ -68,7 +83,7 @@ namespace ContosoUniversity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = db.Students.Find(id);
+            Student student = studentRepository.GetStudentById(id.GetValueOrDefault());
             if (student == null)
             {
                 return HttpNotFound();
@@ -93,8 +108,8 @@ namespace ContosoUniversity.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    db.Students.Add(student);
-                    db.SaveChanges();
+                    studentRepository.InsertStudent(student);
+                    studentRepository.Save();
                     return RedirectToAction("Index");
                 }
             }
@@ -114,7 +129,7 @@ namespace ContosoUniversity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = db.Students.Find(id);
+            Student student = studentRepository.GetStudentById(id.GetValueOrDefault());
             if (student == null)
             {
                 return HttpNotFound();
@@ -127,14 +142,14 @@ namespace ContosoUniversity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,LastName,FirstMideName,EnrollmentDate")] Student student)
+        public ActionResult Edit([Bind(Include = "Id,LastName,FirstMidName,EnrollmentDate")] Student student)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    db.Entry(student).State = EntityState.Modified;
-                    db.SaveChanges();
+                    studentRepository.UpdateStudent(student);
+                    studentRepository.Save();
                     return RedirectToAction("Index");
                 }
             }
@@ -157,7 +172,7 @@ namespace ContosoUniversity.Controllers
             {
                 ViewBag.ErrorMessage = "Delete failed.please try again";
             }
-            Student student = db.Students.Find(id);
+            Student student = studentRepository.GetStudentById(id.GetValueOrDefault());
             if (student == null)
             {
                 return HttpNotFound();
@@ -172,9 +187,9 @@ namespace ContosoUniversity.Controllers
         {
             try
             {
-                Student student = db.Students.Find(id);
-                db.Students.Remove(student);
-                db.SaveChanges();
+                Student student = studentRepository.GetStudentById(id);
+                studentRepository.DeleteStudent(id);
+                studentRepository.Save();
             }
             catch (RetryLimitExceededException /*dex*/)
             {
@@ -186,10 +201,7 @@ namespace ContosoUniversity.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            studentRepository.Dispose();
             base.Dispose(disposing);
         }
     }

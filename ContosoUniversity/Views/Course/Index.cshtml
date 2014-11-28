@@ -7,8 +7,14 @@
 <h2>Courses</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create") | @Html.ActionLink("Bulk Update Credits","UpdateCourseCredits")
 </p>
+@using (Html.BeginForm())
+{
+    <p>Select Department: @Html.DropDownList("SelectedDepartment","All")
+    <input type="submit" value="Filter"/>
+    </p>
+}
 <table class="table">
     <tr>
         <th>

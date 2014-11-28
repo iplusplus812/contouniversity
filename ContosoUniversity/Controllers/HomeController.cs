@@ -18,6 +18,9 @@ namespace ContosoUniversity.Controllers
 
         public ActionResult About()
         {
+            /**
+             * To show how to do the same thing in SQL
+             * With the dabase.SqlQuery
             IQueryable<EnrollmentDateGroup> data = from student in db.Students
                                                    group student by student.EnrollmentDate into dataGroup
                                                    select new EnrollmentDateGroup()
@@ -26,6 +29,14 @@ namespace ContosoUniversity.Controllers
                                                        StudentCount = dataGroup.Count()
 
                                                    };
+             * The SQL version of the above LINQ code.
+             */
+
+            string query =
+                "SELECT EnrollmentDate, COUNT(*) AS StudentCount FROM Person WHERE Discriminator = 'Student' GROUP BY EnrollmentDate";
+            IEnumerable<EnrollmentDateGroup> data = db.Database.SqlQuery<EnrollmentDateGroup>(query);
+            
+
 
             return View(data.ToList());
         }

@@ -30,7 +30,12 @@ namespace ContosoUniversity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Department department = await db.Departments.FindAsync(id);
+            /* try to use sql locally*/
+            //Department department = await db.Departments.FindAsync(id);
+            /*SQL version of the above statement*/
+            /*db.Entity.SqlQuery will return the EntityType and tracked by dbcontext*/
+            string query = "SELECT * FROM Department WHERE DepartmentID = @p0";
+            Department department = await db.Departments.SqlQuery(query, id).SingleOrDefaultAsync();
             if (department == null)
             {
                 return HttpNotFound();
